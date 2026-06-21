@@ -4,6 +4,7 @@ MLX backend implementation for TTS and STT using mlx-audio.
 
 from typing import Optional, List, Tuple
 import asyncio
+from concurrent.futures import ThreadPoolExecutor
 import logging
 import numpy as np
 from pathlib import Path
@@ -29,6 +30,7 @@ class MLXTTSBackend:
         self.model = None
         self.model_size = model_size
         self._current_model_size = None
+        self._executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="mlx-tts")
 
     def is_loaded(self) -> bool:
         """Check if model is loaded."""
@@ -82,8 +84,11 @@ class MLXTTSBackend:
         if self.model is not None and self._current_model_size != model_size:
             self.unload_model()
 
-        # Run blocking load in thread pool
-        await asyncio.to_thread(self._load_model_sync, model_size)
+        # Keep MLX model load and inference on the same worker thread. MLX
+        # streams are thread-local, and qwen3_tts reuses stream state created
+        # during load.
+        loop = asyncio.get_running_loop()
+        await loop.run_in_executor(self._executor, self._load_model_sync, model_size)
 
     # Alias for compatibility
     load_model = load_model_async
@@ -259,8 +264,9 @@ class MLXTTSBackend:
 
             return audio, sample_rate
 
-        # Run blocking inference in thread pool
-        audio, sample_rate = await asyncio.to_thread(_generate_sync)
+        # Run blocking inference on the same thread used for loading.
+        loop = asyncio.get_running_loop()
+        audio, sample_rate = await loop.run_in_executor(self._executor, _generate_sync)
 
         return audio, sample_rate
 
