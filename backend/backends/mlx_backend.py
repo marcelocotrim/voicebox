@@ -47,6 +47,7 @@ class MLXTTSBackend:
         mlx_model_map = {
             "1.7B": "mlx-community/Qwen3-TTS-12Hz-1.7B-Base-bf16",
             "0.6B": "mlx-community/Qwen3-TTS-12Hz-0.6B-Base-bf16",
+            "0.6B-4bit": "mlx-community/Qwen3-TTS-12Hz-0.6B-Base-4bit",
         }
 
         if model_size not in mlx_model_map:

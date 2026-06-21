@@ -16,7 +16,7 @@ const generationSchema = z.object({
   text: z.string().min(1, '').max(50000),
   language: z.enum(LANGUAGE_CODES as [LanguageCode, ...LanguageCode[]]),
   seed: z.number().int().optional(),
-  modelSize: z.enum(['1.7B', '0.6B', '1B', '3B']).optional(),
+  modelSize: z.enum(['1.7B', '0.6B', '0.6B-4bit', '1B', '3B']).optional(),
   instruct: z.string().max(500).optional(),
   engine: z
     .enum([

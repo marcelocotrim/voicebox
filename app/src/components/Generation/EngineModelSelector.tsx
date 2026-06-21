@@ -19,6 +19,7 @@ import type { GenerationFormValues } from '@/lib/hooks/useGenerationForm';
 const ENGINE_OPTIONS = [
   { value: 'qwen:1.7B', label: 'Qwen3-TTS 1.7B', engine: 'qwen' },
   { value: 'qwen:0.6B', label: 'Qwen3-TTS 0.6B', engine: 'qwen' },
+  { value: 'qwen:0.6B-4bit', label: 'Qwen3-TTS 0.6B 4bit (MLX)', engine: 'qwen' },
   { value: 'qwen_custom_voice:1.7B', label: 'Qwen CustomVoice 1.7B', engine: 'qwen_custom_voice' },
   { value: 'qwen_custom_voice:0.6B', label: 'Qwen CustomVoice 0.6B', engine: 'qwen_custom_voice' },
   { value: 'luxtts', label: 'LuxTTS', engine: 'luxtts' },
@@ -70,7 +71,7 @@ export function applyEngineSelection(form: UseFormReturn<GenerationFormValues>, 
   } else if (value.startsWith('qwen:')) {
     const [, modelSize] = value.split(':');
     form.setValue('engine', 'qwen');
-    form.setValue('modelSize', modelSize as '1.7B' | '0.6B');
+    form.setValue('modelSize', modelSize as '1.7B' | '0.6B' | '0.6B-4bit');
     // Validate language is supported by Qwen
     const currentLang = form.getValues('language');
     const available = getLanguageOptionsForEngine('qwen');

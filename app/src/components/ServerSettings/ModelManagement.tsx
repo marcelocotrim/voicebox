@@ -57,6 +57,8 @@ const MODEL_DESCRIPTIONS: Record<string, string> = {
     'High-quality multilingual TTS by Alibaba. Supports 10 languages with natural prosody and voice cloning from short reference audio.',
   'qwen-tts-0.6B':
     'Lightweight version of Qwen TTS. Same language support with faster inference, ideal for lower-end hardware.',
+  'qwen-tts-0.6B-4bit':
+    'Apple Silicon MLX 4-bit quantized Qwen TTS 0.6B. Lower memory use and faster inference than the bf16 variant, with the same cloned-voice workflow.',
   luxtts:
     'Lightweight ZipVoice-based TTS designed for high quality voice cloning and 48kHz speech generation at speeds exceeding 150x realtime.',
   'chatterbox-tts':

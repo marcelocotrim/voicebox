@@ -225,14 +225,27 @@ LLM_ENGINES = {
 def _get_qwen_model_configs() -> list[ModelConfig]:
     """Return Qwen model configs with backend-aware HF repo IDs."""
     backend_type = get_backend_type()
+    configs: list[ModelConfig] = []
     if backend_type == "mlx":
         repo_1_7b = "mlx-community/Qwen3-TTS-12Hz-1.7B-Base-bf16"
         repo_0_6b = "mlx-community/Qwen3-TTS-12Hz-0.6B-Base-bf16"
+        configs.append(
+            ModelConfig(
+                model_name="qwen-tts-0.6B-4bit",
+                display_name="Qwen TTS 0.6B 4bit",
+                engine="qwen",
+                hf_repo_id="mlx-community/Qwen3-TTS-12Hz-0.6B-Base-4bit",
+                model_size="0.6B-4bit",
+                size_mb=1700,
+                supports_instruct=False,
+                languages=["zh", "en", "ja", "ko", "de", "fr", "ru", "pt", "es", "it"],
+            )
+        )
     else:
         repo_1_7b = "Qwen/Qwen3-TTS-12Hz-1.7B-Base"
         repo_0_6b = "Qwen/Qwen3-TTS-12Hz-0.6B-Base"
 
-    return [
+    configs.extend([
         ModelConfig(
             model_name="qwen-tts-1.7B",
             display_name="Qwen TTS 1.7B",
@@ -253,7 +266,8 @@ def _get_qwen_model_configs() -> list[ModelConfig]:
             supports_instruct=False,
             languages=["zh", "en", "ja", "ko", "de", "fr", "ru", "pt", "es", "it"],
         ),
-    ]
+    ])
+    return configs
 
 
 def _get_qwen_custom_voice_configs() -> list[ModelConfig]:
